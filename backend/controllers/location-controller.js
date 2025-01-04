@@ -57,11 +57,10 @@ export const createLocation = async (req, res) => {
 // Update a location by ID
 export const updateLocation = async (req, res) => {
   try {
-    const { country, state } = req.body;
-    req.body;
+    const { nameLocation, state } = req.body;
     const location = await Location.findByIdAndUpdate(
       req.params.id,
-      { country, state },
+      { nameLocation, state },
       { new: true, runValidators: true }
     );
     if (!location) {
@@ -79,17 +78,30 @@ export const updateLocation = async (req, res) => {
 // Delete a location by ID
 export const deleteLocation = async (req, res) => {
   try {
+    // Attempt to find and delete the location by its ID
     const location = await Location.findByIdAndDelete(req.params.id);
+
+    // If the location is not found, return a 404 status with an appropriate message
     if (!location) {
       return res
         .status(404)
         .json({ success: false, message: "Location not found" });
     }
-    res
-      .status(200)
-      .json({ success: true, message: "Location deleted successfully" });
+
+    // If location is deleted successfully, return a success response
+    res.status(200).json({
+      success: true,
+      message: "Location deleted successfully",
+    });
   } catch (error) {
-    console.log("Error deleting location", error);
-    res.status(400).json({ success: false, message: error.message });
+    // Log the error to the server's console for debugging
+    console.error("Error deleting location:", error);
+
+    // Return a 500 error if something goes wrong with the delete operation
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error: Unable to delete location",
+      error: error.message,
+    });
   }
 };

@@ -103,8 +103,8 @@ const CreateLocation = () => {
               className="bg-gray-50 border rounded-lg px-2 py-1"
             >
               <option value="">Select status</option>
-              <option value="1">Active</option>
-              <option value="0">Blocked</option>
+              <option value="Active">Active</option>
+              <option value="Blocked">Blocked</option>
             </select>
           </div>
 
