@@ -1,28 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import {
   CalendarDays,
-  ChevronDown,
-  Download,
-  Filter,
-  LogOut,
-  MoreHorizontal,
-  Search,
-  Share2,
-  Users,
-  MessageCircle,
-  LocateIcon,
   ListCheckIcon,
+  LocateIcon,
+  MessageCircle,
+  LogOut,
+  User,
 } from "lucide-react";
-// import p1 from "@/app/image/image.png";
-// import useProfileStore from "@/store/profileStore"; // Correct import
-// import { useEffect, useState } from "react"; // Added useState import
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
+  const [activeLink, setActiveLink] = useState("dashboard");
   const router = useRouter();
+
+  const handleLinkClick = (link) => {
+    setActiveLink(link);
+  };
 
   return (
     <aside className="w-64 bg-white border-r">
@@ -32,40 +28,76 @@ const Dashboard = () => {
       <nav className="p-4 space-y-2">
         <Link
           href="#"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg"
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
+            activeLink === "dashboard"
+              ? "bg-blue-600 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+          onClick={() => handleLinkClick("dashboard")}
         >
           <CalendarDays className="w-4 h-4" />
           Dashboard
         </Link>
         <Link
           href="#"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
+            activeLink === "category"
+              ? "bg-blue-600 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+          onClick={() => handleLinkClick("category")}
         >
           <ListCheckIcon className="w-4 h-4" />
           Category
         </Link>
         <Link
           href="#"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
+            activeLink === "location"
+              ? "bg-blue-600 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+          onClick={() => handleLinkClick("location")}
         >
           <LocateIcon className="w-4 h-4" />
           Location
         </Link>
         <Link
           href="#"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
+            activeLink === "user"
+              ? "bg-blue-600 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+          onClick={() => handleLinkClick("user")}
+        >
+          <User className="w-4 h-4" />
+          User
+        </Link>
+        <Link
+          href="#"
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
+            activeLink === "feedback"
+              ? "bg-blue-600 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+          onClick={() => handleLinkClick("feedback")}
         >
           <MessageCircle className="w-4 h-4" />
           Feedback
         </Link>
         <Link
           href="#"
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg"
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
+            activeLink === "logout"
+              ? "bg-blue-600 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+          onClick={() => handleLinkClick("logout")}
         >
           <LogOut className="w-4 h-4" />
           Logout
         </Link>
-        {/* Add more navigation items */}
       </nav>
     </aside>
   );
