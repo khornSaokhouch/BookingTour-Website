@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation"; // Import from next/router
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
+import Link from "next/link"; // Import Link from next/link
 
 // Placeholder signup function (replace with your actual logic)
 
@@ -37,9 +38,9 @@ const SignUp = () => {
           </h1>
           <p className="text-sm text-center mb-6 text-gray-600">
             Already have an account?{" "}
-            <a href="/login" className="text-blue-500 underline">
+            <Link href="/login" className="text-blue-500 underline">
               Login
-            </a>
+            </Link>
           </p>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name Input */}
