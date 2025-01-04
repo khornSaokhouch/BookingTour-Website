@@ -50,10 +50,11 @@ export const useLocationStore = create((set, get) => ({
   },
 
   // Update an existing location
- updateLocation: async (location) => {
+  updateLocation: async (location) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await fetch(`${API_LOCATION_URL}/${location.id}`, {
+      const { id } = location; // Ensure `id` is passed correctly from the front end
+      const response = await fetch(`${API_LOCATION_URL}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(location),
@@ -62,7 +63,7 @@ export const useLocationStore = create((set, get) => ({
       if (response.ok) {
         set((state) => ({
           locations: state.locations.map((loc) =>
-            loc.id === location.id ? data.location : loc
+            loc.id === id ? data.location : loc
           ),
           isLoading: false,
         }));
@@ -77,26 +78,25 @@ export const useLocationStore = create((set, get) => ({
   },
 
   // Delete a location
-deleteLocation: async (id) => {
-  if (!id) {
-    console.error("Error: No ID provided for deletion.");
-    return;
-  }
-  try {
-    const response = await fetch(`${API_LOCATION_URL}/${id}`, {
-      method: "DELETE",
-    });
-    const data = await response.json();
-    if (response.ok) {
-      set((state) => ({
-        locations: state.locations.filter((loc) => loc._id !== id),
-      }));
-    } else {
-      console.error("Error deleting location:", data.message);
+  deleteLocation: async (id) => {
+    if (!id) {
+      console.error("Error: No ID provided for deletion.");
+      return;
     }
-  } catch (error) {
-    console.error("Error deleting location:", error);
-  }
-},
-
+    try {
+      const response = await fetch(`${API_LOCATION_URL}/${id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (response.ok) {
+        set((state) => ({
+          locations: state.locations.filter((loc) => loc._id !== id),
+        }));
+      } else {
+        console.error("Error deleting location:", data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting location:", error);
+    }
+  },
 }));

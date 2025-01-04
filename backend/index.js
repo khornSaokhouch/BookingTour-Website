@@ -8,7 +8,6 @@ import connectToDatabase from "./database/db.js";
 import authRoutes from "./routes/auth-route.js";
 import locationRoute from "./routes/loaction-route.js";
 
-
 dotenv.config();
 
 const app = express();
