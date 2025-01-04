@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import connectToDatabase from "./database/db.js";
 import authRoutes from "./routes/auth-route.js";
 import locationRoute from "./routes/loaction-route.js";
+import categoryRoutes from "./routes/category-route.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ connectToDatabase();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/locations", locationRoute);
+app.use("/api/categories", categoryRoutes);
 
 const PORT = process.env.PORT || 3500;
 app.listen(PORT, () => {

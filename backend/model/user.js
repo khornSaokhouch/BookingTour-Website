@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     type: String, // Store the path or URL of the image
     default: null, // Optional default value
   },
-  email: {
+  email: {c
     type: String,
     required: true,
     unique: true,
