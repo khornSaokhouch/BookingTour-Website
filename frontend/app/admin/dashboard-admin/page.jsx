@@ -2,6 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -12,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { useAuthStore } from "../../../store/authStore";
 import {
   CalendarDays,
   ChevronDown,
@@ -41,6 +42,14 @@ const bookings = [
 ];
 
 const page = () => {
+  const fetchUsers = useAuthStore((state) => state.fetchUsers);
+  const getUserCounts = useAuthStore((state) => state.getUserCounts);
+
+  useEffect(() => {
+    fetchUsers(); // Fetch users when the component mounts
+  }, [fetchUsers]);
+
+  const { total, subAdmins } = getUserCounts(); 
   return (
     <main className=" flex-1 p-8">
       {/* Stats */}
@@ -51,8 +60,8 @@ const page = () => {
               <Users className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold">5,423</div>
-              <div className="text-sm text-gray-500">Total Customers</div>
+              <div className="text-2xl font-bold">{total}</div>
+              <div className="text-sm text-gray-500">Total User</div>
             </div>
           </div>
         </Card>
@@ -62,8 +71,8 @@ const page = () => {
               <CalendarDays className="w-6 h-6 text-green-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold">1,893</div>
-              <div className="text-sm text-gray-500">Total Bookings</div>
+              <div className="text-2xl font-bold">{subAdmins}</div>
+              <div className="text-sm text-gray-500">Total Campany</div>
             </div>
           </div>
         </Card>
@@ -90,7 +99,7 @@ const page = () => {
                 <Input
                   placeholder="Search"
                   className="w-64"
-                //   startIcon={<Search className="w-4 h-4 text-gray-400" />}
+                  //   startIcon={<Search className="w-4 h-4 text-gray-400" />}
                 />
                 <Button variant="outline" size="icon">
                   <Filter className="w-4 h-4" />

@@ -1,35 +1,80 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
+"use client";
 
-// Updated sample data to include profile images
-const userData = [
-  {
-    id: 1,
-    name: "John Doe",
-    role: "User",
-    location: "New York",
-    totalBooking: 5,
-    date: "2023-05-15",
-    contactInfo: "john@example.com",
-    status: "Approved",
-    profileImage: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    role: "Sub Admin",
-    location: "Los Angeles",
-    totalBooking: 12,
-    date: "2023-05-14",
-    contactInfo: "jane@example.com",
-    status: "Pending",
-    profileImage: "/placeholder.svg?height=40&width=40",
-  },
-  // Add more sample data as needed
-];
+import React, { useState, useEffect } from "react";
+import { useAuthStore } from "../../../store/authStore";
+import { Link, Pencil, Trash2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 const UserAdminTable = () => {
+  const [activeTable, setActiveTable] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [theme, setTheme] = useState("light");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  const { users, fetchUsers, isLoading, deleteUser, editUser } = useAuthStore();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const filteredData = users.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const displayedData = activeTable
+    ? filteredData.filter(
+        (user) => user.role.toLowerCase() === activeTable.toLowerCase()
+      )
+    : filteredData;
+
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setIsEditing(true);
+  };
+
+  const handleSaveChanges = async (event) => {
+    event.preventDefault();
+    const { name, email, role, status } = selectedUser;
+    await editUser(selectedUser._id, name, email, role, status);
+    setIsEditing(false);
+    setSuccessMessage("User updated successfully!");
+  };
+
+  const handleDelete = (userId) => {
+    setUserToDelete(userId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      await deleteUser(userToDelete);
+      setSuccessMessage("User deleted successfully!");
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setUserToDelete(null);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
   return (
     <div className="container mx-auto px-4 sm:px-8">
       <div className="py-8">
@@ -38,17 +83,61 @@ const UserAdminTable = () => {
             User and Sub Admin Table
           </h2>
         </div>
+
+        {successMessage && (
+          <div className="mb-4 text-green-500">
+            <p>{successMessage}</p>
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-4 mb-4 items-center">
+          <Button
+            onClick={() => setActiveTable("")}
+            variant={activeTable === "" ? "default" : "secondary"}
+          >
+            All
+          </Button>
+          <Button
+            onClick={() => setActiveTable("User")}
+            variant={activeTable === "User" ? "default" : "secondary"}
+          >
+            User
+          </Button>
+          <Button
+            onClick={() => setActiveTable("SubAdmin")}
+            variant={activeTable === "SubAdmin" ? "default" : "secondary"}
+          >
+            Sub Admin
+          </Button>
+          <Input
+            type="text"
+            placeholder="Search by name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-xs"
+          />
+          <Select onValueChange={(value) => setTheme(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Theme" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="dark">Dark</SelectItem>
+              <SelectItem value="system">System</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="overflow-x-auto bg-white rounded-lg shadow">
           <table className="min-w-full leading-normal">
             <thead>
               <tr>
                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  User
+                  Name
                 </th>
                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Location
                 </th>
-                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                <th className="px-5 py-3 border-b-2 text-nowrap border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Total Booking
                 </th>
                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -66,71 +155,74 @@ const UserAdminTable = () => {
               </tr>
             </thead>
             <tbody>
-              {userData.map((user) => (
-                <tr key={user.id}>
+              {displayedData.map((user) => (
+                <tr key={user.id || user.email || user.name}>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 w-10 h-10">
-                        <Image
-                          className="w-full h-full rounded-full"
-                          src={user.profileImage}
-                          alt={`${user.name}'s profile`}
-                          width={40}
-                          height={40}
-                        />
+                        {user.profileImage ? (
+                          <img
+                            className="w-full h-full rounded-full"
+                            src={user.profileImage}
+                            alt={`${user.name}'s profile`}
+                            width={40}
+                            height={40}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+                        )}
                       </div>
                       <div className="ml-3">
                         <p className="text-gray-900 whitespace-no-wrap">
                           {user.name}
                         </p>
-                        <p className="text-gray-600 whitespace-no-wrap">
-                          {user.role}
-                        </p>
                       </div>
                     </div>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      {user.location}
-                    </p>
+                    {user.location}
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      {user.totalBooking}
-                    </p>
+                    {user.totalBooking}
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      {user.date}
-                    </p>
+                    {user.date}
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      {user.contactInfo}
-                    </p>
+                    {user.email}
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <span
-                      className={`relative inline-block px-3 py-1 font-semibold text-${
-                        user.status === "Approved" ? "green" : "orange"
-                      }-900 leading-tight`}
+                    <div
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        user.status === "Approved"
+                          ? "bg-green-100 text-green-800"
+                          : user.status === "Inactive"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
                     >
-                      <span
-                        aria-hidden
-                        className={`absolute inset-0 bg-${
-                          user.status === "Approved" ? "green" : "orange"
-                        }-200 opacity-50 rounded-full`}
-                      ></span>
-                      <span className="relative">{user.status}</span>
-                    </span>
+                      {user.status}
+                    </div>
                   </td>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                    <Link
-                      href={`/profile/${user.id}`}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      View Profile
-                    </Link>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleEdit(user)}
+                        aria-label={`Edit ${user.name}`}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(user._id)} // Use `user._id` instead of `user.id`
+                        aria-label={`Delete ${user.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -138,6 +230,112 @@ const UserAdminTable = () => {
           </table>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {isEditing && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Edit User</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCancelEdit}
+                aria-label="Cancel"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <form onSubmit={handleSaveChanges}>
+              <label>
+                Name
+                <input
+                  type="text"
+                  value={selectedUser.name}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, name: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                />
+              </label>
+
+              <label>
+                Email
+                <input
+                  type="email"
+                  value={selectedUser.email}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, email: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                />
+              </label>
+              <label>
+                Role
+                <select
+                  value={selectedUser.role}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, role: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                >
+                  <option value="User">User</option>
+                  <option value="SubAdmin">SubAdmin</option>
+                </select>
+              </label>
+              <label>
+                Status
+                <select
+                  value={selectedUser.status || ""}
+                  onChange={(e) =>
+                    setSelectedUser({ ...selectedUser, status: e.target.value })
+                  }
+                >
+                  <option value="Approved">Approved</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </label>
+
+              <div className="flex justify-end mt-4">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Confirm Delete</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCancelDelete}
+                aria-label="Cancel"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <p className="mb-4">Are you sure you want to delete this user?</p>
+            <div className="flex justify-end space-x-2">
+              <Button variant="secondary" onClick={handleCancelDelete}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleConfirmDelete}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

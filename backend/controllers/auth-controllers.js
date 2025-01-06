@@ -14,12 +14,22 @@ import path from "path";
 import fs from "fs";
 
 // Signup function
+// Signup function
 export const signup = async (req, res) => {
-  const { name, email, password, role: requestedRole } = req.body;
+  const {
+    name,
+    email,
+    password,
+    status: requestedStatus,  // Renamed to avoid conflict
+    role: requestedRole,
+  } = req.body;
 
   // Define allowed roles and default to 'user'
   const allowedRoles = ["user", "admin", "subadmin"];
+  const allowedStatuses = ["pending", "approved", "rejected"];  // Renamed constant
+
   const role = allowedRoles.includes(requestedRole) ? requestedRole : "user";
+  const status = allowedStatuses.includes(requestedStatus) ? requestedStatus : "pending";  // Default status to 'pending'
 
   try {
     // Validate required fields
@@ -52,6 +62,7 @@ export const signup = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      status,  // Added the status field to the user object
       verificationToken,
       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // Expires in 24 hours
       image: profileImagePath, // Save the profile image path
@@ -79,6 +90,7 @@ export const signup = async (req, res) => {
       .json({ success: false, message: "Server error. Please try again." });
   }
 };
+
 
 // Function to generate profile image
 const generateProfileImage = (name) => {
@@ -331,5 +343,87 @@ export const checkAuth = async (req, res) => {
   } catch (error) {
     console.log("error checking auth", error);
     res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+export const getUsersByRole = async (req, res) => {
+  const { role } = req.query; // Get role from query parameters
+  try {
+    const query = role ? { role } : {}; // If role exists, filter by it
+    const users = await User.find(query).select("-password"); // Exclude password
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+};
+// Edit user details
+export const editUser = async (req, res) => {
+  const { userId } = req.params;  // Get the userId from URL parameters
+  const { name, email, status, role } = req.body;  // Get data from request body
+
+  try {
+    // Validate incoming data (you can add more checks here if needed)
+    if (!name || !email || !role || !status) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields (name, email, role, status) are required",
+      });
+    }
+
+    // Find the user by ID and update their data
+    const user = await User.findByIdAndUpdate(
+      userId,  // Use the userId from params
+      { name, email, status, role },  // Fields to update
+      { new: true }  // Return the updated user document
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Send response with the updated user data
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      user: { ...user._doc, password: undefined },  // Exclude password
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
+  }
+};
+// Delete user
+export const deleteUser = async (req, res) => {
+  const { userId } = req.params;  // Get the userId from URL parameters
+
+  try {
+    // Find and delete the user by ID
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Send response confirming deletion
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
   }
 };
