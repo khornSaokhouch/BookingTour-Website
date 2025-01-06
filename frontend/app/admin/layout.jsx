@@ -1,17 +1,14 @@
-// filepath: /d:/Rupp_ITE_A1-B/New folder (2)/BookingTour-senghorng/BookingTour-senghorng/frontend/app/admin/layout.jsx
 "use client";
 
 import Dashboard from "@/components/Dashboard";
-import { UserNav } from "@/components/user-navbar";
 
 const Layout = ({ children }) => {
   return (
-    <div className="">
-      <div className="flex   min-h-screen bg-gray-50/50">
-        <Dashboard />
+    <Dashboard>
+      <main className="flex-1 p-4 md:p-8">
         {children}
-      </div>
-    </div>
+      </main>
+    </Dashboard>
   );
 };
 
