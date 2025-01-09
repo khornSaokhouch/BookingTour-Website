@@ -22,6 +22,8 @@ const UserAdminTable = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [itemsPerPage] = useState(10); // Number of items per page
 
   const { users, fetchUsers, isLoading, deleteUser, editUser } = useAuthStore();
 
@@ -38,6 +40,25 @@ const UserAdminTable = () => {
         (user) => user.role.toLowerCase() === activeTable.toLowerCase()
       )
     : filteredData;
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = displayedData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(displayedData.length / itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const handleEdit = (user) => {
     setSelectedUser(user);
@@ -155,7 +176,7 @@ const UserAdminTable = () => {
               </tr>
             </thead>
             <tbody>
-              {displayedData.map((user) => (
+              {currentItems.map((user) => (
                 <tr key={user.id || user.email || user.name}>
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                     <div className="flex items-center">
@@ -217,7 +238,7 @@ const UserAdminTable = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDelete(user._id)} // Use `user._id` instead of `user.id`
+                        onClick={() => handleDelete(user._id)}
                         aria-label={`Delete ${user.name}`}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -228,6 +249,33 @@ const UserAdminTable = () => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex flex-col md:flex-row items-center justify-between px-4 md:px-6 py-4 border-t">
+          <div className="text-sm text-gray-500 mb-4 md:mb-0">
+            Showing {indexOfFirstItem + 1} to{" "}
+            {Math.min(indexOfLastItem, displayedData.length)} of{" "}
+            {displayedData.length} entries
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -279,8 +327,8 @@ const UserAdminTable = () => {
                   }
                   className="w-full p-2 border border-gray-300 rounded-md mb-4"
                 >
-                  <option value="User">User</option>
-                  <option value="SubAdmin">SubAdmin</option>
+                  <option value="user">User</option>
+                  <option value="subadmin">SubAdmin</option>
                 </select>
               </label>
               <label>
@@ -291,6 +339,7 @@ const UserAdminTable = () => {
                     setSelectedUser({ ...selectedUser, status: e.target.value })
                   }
                 >
+                  <option value="">Select status</option>
                   <option value="Approved">Approved</option>
                   <option value="Pending">Pending</option>
                 </select>

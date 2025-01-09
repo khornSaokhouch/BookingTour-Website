@@ -2,23 +2,17 @@ import { create } from "zustand";
 
 const API_URL = "http://localhost:3500/api/auth";
 
-export const useAuthStore = create((set,get) => ({
+export const useAuthStore = create((set, get) => ({
   user: null,
   isLoading: false,
   error: null,
   image: null,
   isAuthenticated: false,
-  isCheckingAuth: true,
+  isCheckingAuth: false,
   message: null,
   users: [],
 
   // Use `get` to access the current state
-  getUserCounts: () => {
-    const users = get().users; // Use `get` to access the current state
-    const total = users.length;
-    const subAdmins = users.filter((u) => u.role === "sub-admin").length;
-    return { total, subAdmins };
-  },
 
   fetchUsers: async () => {
     set({ isLoading: true, error: null });
@@ -33,6 +27,52 @@ export const useAuthStore = create((set,get) => ({
       set({ users: data.users, isLoading: false });
     } catch (error) {
       set({ error: error.message, isLoading: false });
+    }
+  },
+  fetchCompanyById: async (userId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`${API_URL}/users/${userId}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch user details");
+      }
+      set({ user: data.user, isLoading: false }); // Update the user state
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+    }
+  },
+  fetchUserById: async (userId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`${API_URL}/users/${userId}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch user details");
+      }
+      return data.user; // Return the user data
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+  getUserNameById: async (userId) => {
+    try {
+      const user = await fetchUserById(userId);
+      if (user && user.name) {
+        return user.name;
+      } else {
+        throw new Error("User not found or name not available");
+      }
+    } catch (error) {
+      console.error("Error getting user name:", error);
+      throw error;
     }
   },
   // Edit user profile
@@ -137,7 +177,7 @@ export const useAuthStore = create((set,get) => ({
     }
   },
   login: async (email, password) => {
-    set({ isLoading: true, error: null });
+    set({ isCheckingAuth: true, error: null });
 
     try {
       const response = await fetch(`${API_URL}/login`, {
@@ -145,31 +185,30 @@ export const useAuthStore = create((set,get) => ({
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
-      // Check if the response is successful
-      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+        throw new Error("Invalid credentials");
       }
 
-      // Debugging logs to verify the API response
-      console.log("API Response:", data);
+      const data = await response.json();
 
-      // Save user and set authentication state
-      set({
-        isLoading: false,
-        isAuthenticated: true,
-        user: data.user, // This should now include the role and image
-      });
-
-      return data.user; // Return user object for further processing
+      // Ensure the user object has a role field
+      if (data.user && data.user.role) {
+        set({ isAuthenticated: true, user: data.user, isCheckingAuth: false });
+        return data.user; // Return the user object with role
+      } else {
+        throw new Error("Login failed: Role not found");
+      }
     } catch (error) {
-      set({ isLoading: false, error: error.message });
-      console.error("Login Error:", error);
-      throw error;
+      set({
+        isCheckingAuth: false,
+        isAuthenticated: false,
+        user: null,
+        error: error.message,
+      });
+      throw error; // Re-throw the error to handle it in the component
     }
   },
   // Fetch user profile
@@ -217,43 +256,83 @@ export const useAuthStore = create((set,get) => ({
     }
   },
 
-  // checkAuth: async () => {
-  //   set({ isCheckingAuth: true, error: null });
-  //   try {
-  //     const response = await fetch(`${API_URL}/check-auth`, {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //     });
-  //     const data = await response.json();
-  //     if (data.user) {
-  //       set({ isAuthenticated: true, user: data.user, isCheckingAuth: false });
-  //     } else {
-  //       set({ isAuthenticated: false, user: null, isCheckingAuth: false });
-  //     }
-  //   } catch (error) {
-  //     set({ isCheckingAuth: false, isAuthenticated: false, user: null });
-  //     console.log(error);
-  //   }
-  // },
-  // logout: async () => {
-  //   set({ isLoading: true, error: null });
-  //   try {
-  //     const response = await fetch(`${API_URL}/logout`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //     });
-  //     set({ isLoading: false, isAuthenticated: false, user: null });
-  //   } catch (error) {
-  //     set({ isLoading: false, error: error.message });
-  //     throw error;
-  //   }
-  // },
+  checkAuth: async () => {
+    set({ isCheckingAuth: true, error: null });
+    try {
+      const response = await fetch(`${API_URL}/check-auth`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.user) {
+        set({ isAuthenticated: true, user: data.user, isCheckingAuth: false });
+      } else {
+        set({ isAuthenticated: false, user: null, isCheckingAuth: false });
+      }
+    } catch (error) {
+      set({ isCheckingAuth: false, isAuthenticated: false, user: null });
+      console.log(error);
+    }
+  },
+  logout: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`${API_URL}/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      set({ isLoading: false, isAuthenticated: false, user: null });
+    } catch (error) {
+      set({ isLoading: false, error: error.message });
+      throw error;
+    }
+  },
+  uploadImage: async (file) => {
+    set({ isLoading: true, error: null });
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch(`${API_URL}/upload-image`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to upload image");
+      }
+
+      set({ image: data.imageUrl, isLoading: false }); // Update image state
+      return data.imageUrl; // Return the image URL
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+      throw error;
+    }
+  },
+  fetchImage: async (userId) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`${API_URL}/users/${userId}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch user details");
+      }
+      set({ image: data.user.imageUrl, isLoading: false }); // Update image state
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+    }
+  },
   // forgotPassword: async (email) => {
   //   set({ isLoading: true, error: null });
   //   try {

@@ -41,19 +41,45 @@ const bookings = [
   // Add more booking data as needed
 ];
 
-<<<<<<< Updated upstream
-const page = () => {
-  const fetchUsers = useAuthStore((state) => state.fetchUsers);
-  const getUserCounts = useAuthStore((state) => state.getUserCounts);
+const Dashboard = () => {
+  const { users, fetchUsers, isLoading, deleteUser, editUser } = useAuthStore();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTable, setActiveTable] = useState("");
+  const [regularUsers, setRegularUsers] = useState(0);
+  const [subAdmins, setSubAdmins] = useState(0);
 
   useEffect(() => {
-    fetchUsers(); // Fetch users when the component mounts
+    fetchUsers();
   }, [fetchUsers]);
 
-  const { total, subAdmins } = getUserCounts(); 
-=======
-const Page = () => {
->>>>>>> Stashed changes
+  useEffect(() => {
+    const filteredData = users.filter((user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const displayedData = activeTable
+      ? filteredData.filter(
+          (user) => user.role.toLowerCase() === activeTable.toLowerCase()
+        )
+      : filteredData;
+
+    let regularUsersCount = 0;
+    let subAdminsCount = 0;
+
+    displayedData.forEach((user) => {
+      if (user.role === "User") {
+        regularUsersCount++;
+      } else if (user.role === "SubAdmin") {
+        subAdminsCount++;
+      }
+    });
+
+    setRegularUsers(regularUsersCount);
+    setSubAdmins(subAdminsCount);
+  }, [users, searchTerm, activeTable]);
+
+  const total = users.length;
+
   return (
     <>
       {/* Stats */}
@@ -65,29 +91,29 @@ const Page = () => {
             </div>
             <div>
               <div className="text-2xl font-bold">{total}</div>
-              <div className="text-sm text-gray-500">Total User</div>
+              <div className="text-sm text-gray-500">Total Users</div>
             </div>
           </div>
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-full">
-              <CalendarDays className="w-6 h-6 text-green-600" />
+              <Users className="w-6 h-6 text-green-600" />
             </div>
             <div>
               <div className="text-2xl font-bold">{subAdmins}</div>
-              <div className="text-sm text-gray-500">Total Campany</div>
+              <div className="text-sm text-gray-500">Company user</div>
             </div>
           </div>
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-4">
             <div className="p-3 rounded-full">
-              <Share2 className="w-6 h-6 text-purple-600" />
+              <Users className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <div className="text-2xl font-bold">189</div>
-              <div className="text-sm text-gray-500">Total Shares</div>
+              <div className="text-2xl font-bold">{regularUsers}</div>
+              <div className="text-sm text-gray-500">Tour Booking</div>
             </div>
           </div>
         </Card>
@@ -98,19 +124,14 @@ const Page = () => {
         <div className="p-4 md:p-6 border-b">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <h2 className="text-lg font-semibold">New Owner Request</h2>
-<<<<<<< Updated upstream
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <Input
                   placeholder="Search"
                   className="w-64"
-                  //   startIcon={<Search className="w-4 h-4 text-gray-400" />}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
-=======
-            <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-              <div className="flex items-center gap-2 w-full md:w-64">
-                <Input placeholder="Search" className="w-full" />
->>>>>>> Stashed changes
                 <Button variant="outline" size="icon">
                   <Filter className="w-4 h-4" />
                 </Button>
@@ -198,4 +219,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Dashboard;

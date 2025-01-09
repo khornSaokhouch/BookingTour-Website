@@ -1,12 +1,25 @@
 "use client";
+
 import React, { useState } from "react";
 import { Home, Calendar, Plus, User, Star, LogOut, Bell } from "lucide-react";
+import { useAuthStore } from "../store/authStore";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Dashboard = ({ children }) => {
+  const { logout, user } = useAuthStore();
+  const router = useRouter();
   const [activeLink, setActiveLink] = useState("dashboard");
+  const [isLoading, setIsLoading] = useState(false); // Manage loading state
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
+  };
+
+  const handleLogout = async () => {
+    setIsLoading(true); // Start loading
+    await logout();
+    setIsLoading(false); // Stop loading after logout
   };
 
   return (
@@ -22,27 +35,45 @@ const Dashboard = ({ children }) => {
             />
           </div>
         </div>
+
         <nav className="mt-4 space-y-1">
           {[
-            { name: "Dashboard", icon: Home },
-            { name: "Booking", icon: Calendar },
-            { name: "Add Package", icon: Plus },
-            { name: "Users", icon: User },
-            { name: "Reviews", icon: Star },
-            { name: "Logout", icon: LogOut },
+            { name: "Dashboard", icon: Home, href: "/admin/dashboard-admin" },
+            { name: "Category", icon: Calendar, href: "/admin/category" },
+            { name: "Location", icon: Plus, href: "/admin/location" },
+            { name: "Users", icon: User, href: "/admin/user" },
+            { name: "Reviews", icon: Star, href: "/admin/reviews" },
+            { name: "Logout", icon: LogOut }, // Logout doesn't need href
           ].map((item) => (
-            <button
-              key={item.name}
-              onClick={() => handleLinkClick(item.name.toLowerCase())}
-              className={`flex items-center w-full px-4 py-3 rounded-lg gap-4 text-sm font-medium ${
-                activeLink === item.name.toLowerCase()
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              <item.icon className="w-5 h-5" />
-              {item.name}
-            </button>
+            <div key={item.name}>
+              {item.name === "Logout" ? (
+                <button
+                  onClick={handleLogout} // Call handleLogout for "Logout"
+                  className={`flex items-center w-full px-4 py-3 rounded-lg gap-4 text-sm font-medium ${
+                    activeLink === item.name.toLowerCase()
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                  disabled={isLoading} // Disable Logout while loading
+                >
+                  <item.icon className="w-5 h-5" />
+                  {isLoading ? "Logging out..." : item.name}
+                </button>
+              ) : (
+                <Link
+                  href={item.href}
+                  className={`flex items-center w-full px-4 py-3 rounded-lg gap-4 text-sm font-medium ${
+                    activeLink === item.name.toLowerCase()
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                  onClick={() => handleLinkClick(item.name.toLowerCase())}
+                >
+                  <item.icon className="w-5 h-5" />
+                  {item.name}
+                </Link>
+              )}
+            </div>
           ))}
         </nav>
       </aside>
@@ -103,14 +134,9 @@ const Dashboard = ({ children }) => {
             </button>
 
             <div className="flex items-center space-x-8">
-              <img
-                src="https://i.pinimg.com/236x/cd/b9/46/cdb946122557049c84ecc2794b7dcd37.jpg"
-                alt="Profile"
-                className="w-12 h-12 rounded-full object-cover object-center"
-              />
               <div>
-                <p className="text-lg font-medium">Moni Roy</p>
-                <p className="text-xs text-gray-500">Admin</p>
+                <p className="text-lg font-medium">{user?.name}</p>
+                <p className="text-xs text-gray-500">{user?.role}</p>
               </div>
               <button className="focus:outline-none">
                 <svg
@@ -133,9 +159,7 @@ const Dashboard = ({ children }) => {
         </header>
 
         {/* Main Content Placeholder */}
-        <div className="flex-1 p-6 bg-gray-50">
-          {children}
-        </div>
+        <div className="flex-1 p-6 bg-gray-50">{children}</div>
       </div>
     </div>
   );

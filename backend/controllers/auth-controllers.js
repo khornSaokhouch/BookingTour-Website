@@ -20,16 +20,18 @@ export const signup = async (req, res) => {
     name,
     email,
     password,
-    status: requestedStatus,  // Renamed to avoid conflict
+    status: requestedStatus, // Renamed to avoid conflict
     role: requestedRole,
   } = req.body;
 
   // Define allowed roles and default to 'user'
   const allowedRoles = ["user", "admin", "subadmin"];
-  const allowedStatuses = ["pending", "approved", "rejected"];  // Renamed constant
+  const allowedStatuses = ["pending", "approved", "rejected"]; // Renamed constant
 
   const role = allowedRoles.includes(requestedRole) ? requestedRole : "user";
-  const status = allowedStatuses.includes(requestedStatus) ? requestedStatus : "pending";  // Default status to 'pending'
+  const status = allowedStatuses.includes(requestedStatus)
+    ? requestedStatus
+    : "pending"; // Default status to 'pending'
 
   try {
     // Validate required fields
@@ -62,7 +64,7 @@ export const signup = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      status,  // Added the status field to the user object
+      status, // Added the status field to the user object
       verificationToken,
       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // Expires in 24 hours
       image: profileImagePath, // Save the profile image path
@@ -90,7 +92,6 @@ export const signup = async (req, res) => {
       .json({ success: false, message: "Server error. Please try again." });
   }
 };
-
 
 // Function to generate profile image
 const generateProfileImage = (name) => {
@@ -159,6 +160,7 @@ export const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         image: `${process.env.API_URL}${path.basename(user.image)}`,
       },
     });
@@ -180,7 +182,6 @@ export const getProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 // export const login = async (req, res) => {
 //   const { email, password } = req.body;
@@ -359,8 +360,8 @@ export const getUsersByRole = async (req, res) => {
 };
 // Edit user details
 export const editUser = async (req, res) => {
-  const { userId } = req.params;  // Get the userId from URL parameters
-  const { name, email, status, role } = req.body;  // Get data from request body
+  const { userId } = req.params; // Get the userId from URL parameters
+  const { name, email, status, role } = req.body; // Get data from request body
 
   try {
     // Validate incoming data (you can add more checks here if needed)
@@ -373,9 +374,9 @@ export const editUser = async (req, res) => {
 
     // Find the user by ID and update their data
     const user = await User.findByIdAndUpdate(
-      userId,  // Use the userId from params
-      { name, email, status, role },  // Fields to update
-      { new: true }  // Return the updated user document
+      userId, // Use the userId from params
+      { name, email, status, role }, // Fields to update
+      { new: true } // Return the updated user document
     );
 
     if (!user) {
@@ -389,7 +390,7 @@ export const editUser = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "User updated successfully",
-      user: { ...user._doc, password: undefined },  // Exclude password
+      user: { ...user._doc, password: undefined }, // Exclude password
     });
   } catch (error) {
     console.error("Error updating user:", error);
@@ -401,7 +402,7 @@ export const editUser = async (req, res) => {
 };
 // Delete user
 export const deleteUser = async (req, res) => {
-  const { userId } = req.params;  // Get the userId from URL parameters
+  const { userId } = req.params; // Get the userId from URL parameters
 
   try {
     // Find and delete the user by ID
@@ -421,6 +422,61 @@ export const deleteUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Error deleting user:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
+  }
+};
+// controllers/auth-controllers.js
+export const uploadImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
+
+    const imageUrl = `/uploads/${req.file.filename}`; // URL to access the image
+
+    res.status(200).json({
+      success: true,
+      message: "Image uploaded successfully",
+      imageUrl, // Return the image URL
+    });
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
+  }
+};
+// controllers/auth-controllers.js
+export const companyUser = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Include the imageUrl in the response
+    res.status(200).json({
+      success: true,
+      user: {
+        ...user.toObject(),
+        imageUrl: user.imageUrl || null, // Ensure imageUrl is included
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user:", error);
     res.status(500).json({
       success: false,
       message: "Server error. Please try again.",
