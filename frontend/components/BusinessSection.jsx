@@ -1,4 +1,5 @@
 import Image from 'next/image'; 
+import Link from 'next/link';
 
 
 export default function BusinessSection() {
@@ -14,9 +15,11 @@ export default function BusinessSection() {
             <p className="text-gray-600 mb-6">
               Welcome to our "Become a Supplier" page! Join us and showcase your amazing experiences to travelers who are eager to discover popular and exciting places.
             </p>
-            <button className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition mb-6">
-              Get Started
-            </button>
+            <Link href="/become-a-supplier/company-supplier1">
+  <button className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition mb-6">
+    Get Started
+  </button>
+</Link>
           </div>
           <div className="md:w-1/2 flex flex-col items-center">
             <Image

@@ -100,7 +100,7 @@ export const useAdminStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const response = await axios.put(
-        `${API_URL}/${adminId}/users/${userId}`,
+        `${API_URL}/${adminId}/user/${userId}`,
         updatedData
       );
       const { user, counts } = response.data;
@@ -115,7 +115,7 @@ export const useAdminStore = create((set) => ({
 
       return user;
     } catch (error) {
-      set({ 
+      set({
         error: error.response?.data?.message || "Failed to update user",
         loading: false,
       });
@@ -127,7 +127,7 @@ export const useAdminStore = create((set) => ({
   deleteUser: async (adminId, userId) => {
     set({ loading: true, error: null });
     try {
-      await axios.delete(`${API_URL}/${adminId}/users/${userId}`);
+      await axios.delete(`${API_URL}/${adminId}/user/${userId}`);
       set((state) => ({
         users: state.users.filter((user) => user._id !== userId),
         subAdmins: state.subAdmins.filter(

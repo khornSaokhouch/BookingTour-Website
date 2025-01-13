@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ProfileUser from "../../components/Profile";
 
 const ProfilePage = ({ isAuthenticated }) => {
   const [user, setUser] = useState(null);
@@ -52,18 +53,9 @@ const ProfilePage = ({ isAuthenticated }) => {
   const userArray = Array.isArray(user) ? user : [user];
 
   return (
-    <div>
-      {userArray.map((userData, index) => (
-        <div key={index}>
-          <h2>{userData.name}</h2>
-          {userData.image ? (
-            <img src={userData.image} alt={userData.name} />
-          ) : (
-            <div>No image available</div>
-          )}
-        </div>
-      ))}
-    </div>
+   <div>
+    <ProfileUser />
+   </div>
   );
 };
 

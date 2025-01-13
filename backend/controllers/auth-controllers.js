@@ -28,8 +28,7 @@ export const signup = async (req, res) => {
   } = req.body;
 
   // Define the fixed admin ID
-  const allowedIDadmin = "67824394c37fb65437da2bd6"; // Replace with your actual admin ID
-
+  const allowedIDadmin = "6784b62fe5b2551e15319e02";
   // Define allowed roles and statuses
   const allowedRoles = ["user", "admin", "subadmin"];
   const allowedStatuses = ["pending", "approved", "rejected"];
@@ -522,5 +521,3 @@ export const companyUser = async (req, res) => {
     });
   }
 };
-
-

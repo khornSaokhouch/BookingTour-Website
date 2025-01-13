@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAuthStore } from "../../../../store/authStore";
+import { useParams } from "next/navigation"; // Import useParams
+import { useAdminStore } from "../../../../store/adminStore";
 import { Link, Pencil, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/select";
 
 const UserAdminTable = () => {
+  const { id } = useParams(); // Get the company ID from the URL
   const [activeTable, setActiveTable] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
@@ -25,13 +27,24 @@ const UserAdminTable = () => {
   const [currentPage, setCurrentPage] = useState(1); // Pagination state
   const [itemsPerPage] = useState(10); // Number of items per page
 
-  const { users, fetchUsers, isLoading, deleteUser, editUser } = useAuthStore();
+  const {
+    users,
+    subAdmins,
+    fetchAdminUsers,
+    isLoading,
+    deleteUser,
+    updateUserOrSubAdmin,
+  } = useAdminStore();
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    if (id) {
+      fetchAdminUsers(id); // Use the company ID from the URL
+    }
+  }, [id, fetchAdminUsers]);
 
-  const filteredData = users.filter((user) =>
+  const allUsers = [...users, ...subAdmins];
+
+  const filteredData = allUsers.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -68,9 +81,19 @@ const UserAdminTable = () => {
   const handleSaveChanges = async (event) => {
     event.preventDefault();
     const { name, email, role, status } = selectedUser;
-    await editUser(selectedUser._id, name, email, role, status);
-    setIsEditing(false);
-    setSuccessMessage("User updated successfully!");
+    try {
+      await updateUserOrSubAdmin(id, selectedUser._id, {
+        name,
+        email,
+        role,
+        status,
+      });
+      setIsEditing(false);
+      setSuccessMessage("User updated successfully!");
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      setSuccessMessage("Failed to update user. Please try again.");
+    }
   };
 
   const handleDelete = (userId) => {
@@ -80,10 +103,15 @@ const UserAdminTable = () => {
 
   const handleConfirmDelete = async () => {
     if (userToDelete) {
-      await deleteUser(userToDelete);
-      setSuccessMessage("User deleted successfully!");
-      setIsDeleteModalOpen(false);
-      setUserToDelete(null);
+      try {
+        await deleteUser(id, userToDelete);
+        setSuccessMessage("User deleted successfully!");
+        setIsDeleteModalOpen(false);
+        setUserToDelete(null);
+      } catch (error) {
+        console.error("Failed to delete user:", error);
+        setSuccessMessage("Failed to delete user. Please try again.");
+      }
     }
   };
 
@@ -215,7 +243,7 @@ const UserAdminTable = () => {
                   <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                     <div
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        user.status === "Approved"
+                        user.status === "approved"
                           ? "bg-green-100 text-green-800"
                           : user.status === "Inactive"
                           ? "bg-yellow-100 text-yellow-800"
@@ -340,8 +368,8 @@ const UserAdminTable = () => {
                   }
                 >
                   <option value="">Select status</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="pending">Pending</option>
                 </select>
               </label>
 

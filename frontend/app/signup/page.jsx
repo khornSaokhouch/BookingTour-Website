@@ -29,7 +29,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="flex bg-white rounded-lg shadow-lg w-[900px] overflow-hidden">
         {/* Left Side: Form */}
         <div className="w-1/2 p-8">
@@ -137,7 +137,7 @@ const SignUp = () => {
           {/* Social Login */}
           <div className="flex space-x-4">
             <Button className="flex-1 bg-blue-600 text-white flex items-center justify-center space-x-1">
-              <img src="/facebook.png" alt="Facebook" className="w-5 h-5" />
+              <img src="/facebook.png" alt="Facebook" className="w-10 h-10" />
               <span>Facebook</span>
             </Button>
             <Button className="flex-1 bg-red-500 text-white flex items-center justify-center space-x-1">
@@ -149,7 +149,7 @@ const SignUp = () => {
 
         {/* Right Side: Illustration */}
         <div className="w-1/2 bg-gray-50 flex items-center justify-center">
-          <img src="/image.png" alt="Sign Up Illustration" className="w-3/4" />
+          <img src="/form.png" alt="Sign Up Illustration" className="w-3/4" />
         </div>
       </div>
     </div>

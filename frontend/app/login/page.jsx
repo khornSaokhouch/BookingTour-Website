@@ -10,27 +10,6 @@ import { useAuthStore } from "../../store/authStore";
 import { useAdminStore } from "../../store/adminStore";
 import Link from "next/link";
 
-// Define routes based on user roles
-// const ROLE_ROUTES = {
-//   admin: (id) => `/admin/${id}/dashboard-admin`,
-//   subadmin: (id) => `/company/${id}/dashboard/`,
-//   default: "/profile",
-// };
-
-// const AuthenticationRoutes = ({ children }) => {
-//   const router = useRouter();
-//   const { isAuthenticated, user } = useAuthStore();
-
-//   useEffect(() => {
-//     if (isAuthenticated && user) {
-//       const route = ROLE_ROUTES[user.role] || ROLE_ROUTES.default;
-//       router.replace(typeof route === "function" ? route(user.id) : route);
-//     }
-//   }, [isAuthenticated, user, router]);
-
-//   return children;
-// };
-
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

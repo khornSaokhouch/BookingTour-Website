@@ -14,14 +14,14 @@ export default function Footer() {
             <div className="container mx-auto px-5 md:px-20 py-10">
                 <div className="flex flex-col md:flex-row justify-between items-start">
                     <div className="px-5 md:px-10 mb-6 md:mb-0 flex flex-col items-start">
-                        <img src="logo.png" alt="Logo" className="h-20 w-auto" />
+                        <img src="/logo.png" alt="Logo" className="h-20 w-auto" />
                         <p className="text-gray-600 mt-4">Travel helps companies manage payments easily.</p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:ml-20">
                         <div>
                             <h3 className="font-semibold text-lg pb-2">Company</h3>
                             <ul className="text-gray-600 space-y-2">
-                                <li><Link href="/about">About Us</Link></li>
+                                <li><Link href="/about-us">About Us</Link></li>
                                 <li><Link href="/contact">Contact Us</Link></li>
                                 <li><Link href="/faq">FAQ</Link></li>
                                 <li><Link href="/privacy">Privacy Policy</Link></li>
