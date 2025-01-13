@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: ["admin", "subadmin", "user"], // Default value for role
   },
+  adminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
   resetPasswordToken: String,
   resetPasswordExpiresAt: Date,
   verificationToken: String,

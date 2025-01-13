@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import useCategoryStore from "../../../store/categoryStore";
+import useCategoryStore from "../../../../store/categoryStore";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation"; // Import useParams
 import {
   Table,
   TableBody,
@@ -35,6 +36,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const CategoryList = () => {
+  const { id } = useParams(); // Get the company ID from the URL
   const {
     categories,
     fetchCategories,
@@ -53,30 +55,36 @@ const CategoryList = () => {
     name: "",
     status: "",
   });
-  const [isDeleteAlertOpen, setDeleteAlertOpen] = useState(false);  // State for alert dialog
-  const [categoryToDelete, setCategoryToDelete] = useState(null);    // Category to delete
+  const [isDeleteAlertOpen, setDeleteAlertOpen] = useState(false); // State for alert dialog
+  const [categoryToDelete, setCategoryToDelete] = useState(null); // Category to delete
 
   // Fetch categories on component mount
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    if (id) {
+      fetchCategories(id); // Pass the `id` to fetch categories
+    }
+  }, [id]);
 
   // Handle adding a category
   const handleAddCategory = async () => {
-    await addCategory({
-      categoryname: categoryData.name,
-      status: categoryData.status,
-    });
-    setAddModalOpen(false);
-    setCategoryData({ name: "", status: "" });
+    if (id) {
+      await addCategory({
+        categoryname: categoryData.name,
+        status: categoryData.status,
+        companyId: id, // Include the `id` in the request
+      });
+      setAddModalOpen(false);
+      setCategoryData({ name: "", status: "" });
+    }
   };
 
   // Handle editing a category
   const handleEditCategory = async () => {
-    if (currentCategory) {
+    if (currentCategory && id) {
       await updateCategory(currentCategory._id, {
         categoryname: categoryData.name,
         status: categoryData.status,
+        companyId: id, // Include the `id` in the request
       });
       setEditModalOpen(false);
       setCurrentCategory(null);
@@ -86,16 +94,16 @@ const CategoryList = () => {
 
   // Handle opening the delete confirmation dialog
   const handleDeleteCategory = (category) => {
-    setCategoryToDelete(category);  // Set the category to delete
-    setDeleteAlertOpen(true);  // Open the confirmation dialog
+    setCategoryToDelete(category); // Set the category to delete
+    setDeleteAlertOpen(true); // Open the confirmation dialog
   };
 
   // Confirm deletion
   const confirmDeleteCategory = async () => {
-    if (categoryToDelete) {
-      await deleteCategory(categoryToDelete._id);
-      setDeleteAlertOpen(false);  // Close the dialog
-      setCategoryToDelete(null);  // Clear category to delete
+    if (categoryToDelete && id) {
+      await deleteCategory(categoryToDelete._id, id); // Pass the `id` to deleteCategory
+      setDeleteAlertOpen(false); // Close the dialog
+      setCategoryToDelete(null); // Clear category to delete
     }
   };
 

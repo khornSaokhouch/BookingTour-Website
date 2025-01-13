@@ -18,7 +18,7 @@ import upload from "../middleware/uploadImage.js";
 
 const router = express.Router();
 
-router.post("/signup", upload.single("image"), signup); 
+router.post("/signup", upload.single("image"), signup);
 router.post("/login", login);
 router.post("/logout", logout);
 router.post("/forgot-password", forgotPassword);

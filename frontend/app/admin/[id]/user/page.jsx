@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../../store/authStore";
 import { Link, Pencil, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

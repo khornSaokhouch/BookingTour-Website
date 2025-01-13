@@ -1,4 +1,5 @@
 import { User } from "../model/user.js";
+import { Admin } from "../model/admin.js";
 import bcrypt from "bcryptjs";
 import { generateJWTToken } from "../utils/generateJWTToken.js";
 import { generateVerificationToken } from "../utils/generateVerificationToken.js";
@@ -15,48 +16,51 @@ import fs from "fs";
 
 // Signup function
 // Signup function
+
 export const signup = async (req, res) => {
   const {
     name,
     email,
     password,
-    status: requestedStatus, // Renamed to avoid conflict
+    adminId, // Optional for users or subadmins
+    status: requestedStatus,
     role: requestedRole,
   } = req.body;
 
-  // Define allowed roles and default to 'user'
-  const allowedRoles = ["user", "admin", "subadmin"];
-  const allowedStatuses = ["pending", "approved", "rejected"]; // Renamed constant
+  // Define the fixed admin ID
+  const allowedIDadmin = "67824394c37fb65437da2bd6"; // Replace with your actual admin ID
 
+  // Define allowed roles and statuses
+  const allowedRoles = ["user", "admin", "subadmin"];
+  const allowedStatuses = ["pending", "approved", "rejected"];
+
+  // Validate role and status
   const role = allowedRoles.includes(requestedRole) ? requestedRole : "user";
   const status = allowedStatuses.includes(requestedStatus)
     ? requestedStatus
-    : "pending"; // Default status to 'pending'
+    : "pending";
 
   try {
     // Validate required fields
     if (!name || !email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
+      return res.status(400).json({
+        success: false,
+        message: "Name, email, and password are required.",
+      });
     }
 
-    // Check if user already exists
+    // Check if the user already exists
     const userAlreadyExists = await User.findOne({ email });
     if (userAlreadyExists) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User already exists" });
+      return res.status(400).json({
+        success: false,
+        message: "User with this email already exists.",
+      });
     }
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Generate verification token
     const verificationToken = generateVerificationToken();
-
-    // Generate profile image
-    const profileImagePath = generateProfileImage(name);
 
     // Create a new user
     const user = new User({
@@ -64,32 +68,67 @@ export const signup = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      status, // Added the status field to the user object
+      status,
       verificationToken,
-      verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // Expires in 24 hours
-      image: profileImagePath, // Save the profile image path
+      verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
+      adminId: role === "user" || role === "subadmin" ? allowedIDadmin : null,
     });
 
+    // Save the user to the database
     await user.save();
 
-    // Generate JWT token and send verification email
+    // Handle admin-specific actions
+    if (role === "admin") {
+      const newAdmin = new Admin({
+        name,
+        email,
+        password: hashedPassword,
+        users: [],
+        subAdmins: [],
+      });
+
+      await newAdmin.save();
+      user.adminId = newAdmin._id; // Link the user to their admin record
+      await user.save();
+    } else if (role === "user" || role === "subadmin") {
+      const admin = await Admin.findById(allowedIDadmin);
+      if (!admin) {
+        return res.status(404).json({
+          success: false,
+          message: "Admin not found. Check the predefined admin ID.",
+        });
+      }
+
+      if (role === "user") {
+        admin.users.push(user._id);
+      } else if (role === "subadmin") {
+        admin.subAdmins.push(user._id);
+      }
+      await admin.save();
+    }
+
+    // Generate JWT token and send a verification email
     generateJWTToken(res, user._id, user.role);
     await sendVerificationEmail(user.email, verificationToken);
 
-    // Send response
-    res.status(201).json({
+    // Send the final response
+    return res.status(201).json({
       success: true,
-      message: "User created successfully. Please verify your email.",
+      message: "User created successfully and linked to the admin.",
       user: {
-        ...user._doc,
-        password: undefined, // Exclude password from the response
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
       },
     });
   } catch (error) {
     console.error("Error during signup:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Server error. Please try again." });
+    return res.status(500).json({
+      success: false,
+      message: "Server error. Please try again.",
+    });
   }
 };
 
@@ -483,3 +522,5 @@ export const companyUser = async (req, res) => {
     });
   }
 };
+
+

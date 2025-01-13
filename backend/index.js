@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth-route.js";
 import locationRoute from "./routes/loaction-route.js";
 import categoryRoutes from "./routes/category-route.js";
 import tourRoutes from "./routes/company-routes/addpackage-route.js";
+import adminRouter from "./routes/admin-route.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/locations", locationRoute);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/tours", tourRoutes);
+app.use("/api/admins", adminRouter);
 
 const PORT = process.env.PORT || 3500;
 app.listen(PORT, () => {

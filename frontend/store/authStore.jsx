@@ -11,6 +11,8 @@ export const useAuthStore = create((set, get) => ({
   isCheckingAuth: false,
   message: null,
   users: [],
+  userCount: 0, // Initialize with 0
+  subAdminCount: 0, //
 
   // Use `get` to access the current state
 
@@ -29,6 +31,28 @@ export const useAuthStore = create((set, get) => ({
       set({ error: error.message, isLoading: false });
     }
   },
+  fetchUserCounts: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`${API_URL}/count-users-and-subadmins`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || "Failed to fetch counts");
+
+      // Set the counts in the store
+      set({
+        userCount: data.userCount,
+        subAdminCount: data.subAdminCount,
+        isLoading: false,
+      });
+    } catch (error) {
+      set({ error: error.message, isLoading: false });
+    }
+  },
+
   fetchCompanyById: async (userId) => {
     set({ isLoading: true, error: null });
     try {
