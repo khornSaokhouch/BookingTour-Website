@@ -38,7 +38,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="flex bg-white rounded-lg shadow-lg w-[900px] overflow-hidden">
         {/* Left Side: Form */}
         <div className="w-1/2 p-8">
@@ -128,19 +128,19 @@ const LoginPage = () => {
           {/* Social Login */}
           <div className="flex space-x-4">
             <Button className="flex-1 bg-blue-600 text-white flex items-center justify-center space-x-1">
-              <img src="/facebook.png" alt="Facebook" className="w-5 h-5" />
-              <span>Log in with Facebook</span>
+              <img src="/facebook.png" alt="Facebook" className="w-10 h-10" />
+              <span>Facebook</span>
             </Button>
             <Button className="flex-1 bg-blue-600 text-white flex items-center justify-center space-x-1">
               <img src="/google.png" alt="Google" className="w-5 h-5" />
-              <span>Log in with Google</span>
+              <span>Google</span>
             </Button>
           </div>
         </div>
 
         {/* Right Side: Illustration */}
         <div className="w-1/2 bg-gray-50 flex items-center justify-center">
-          <img src="/image.png" alt="Login Illustration" className="w-3/4" />
+          <img src="/form.png" alt="Login Illustration" className="w-3/4" />
         </div>
       </div>
     </div>
