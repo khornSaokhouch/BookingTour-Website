@@ -79,7 +79,7 @@ export default function ProfileUser() {
           {/* Right Section: Favourites + Become Supplier + Profile + Sign in */}
           <div className="hidden md:flex items-center space-x-6 ml-auto text-lg">
             <Link
-              href="#"
+              href="/favourites"
               className="text-gray-700 hover:text-blue-500 flex items-center space-x-2"
             >
               <FontAwesomeIcon icon={faHeart} className="text-lg" />
@@ -127,7 +127,7 @@ export default function ProfileUser() {
             </Link>
             <div className="border-t border-gray-300"></div>
             <Link
-              href="#"
+              href="/favourites"
               className="px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
             >
               <FontAwesomeIcon icon={faHeart} className="text-lg" />

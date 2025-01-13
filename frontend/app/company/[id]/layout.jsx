@@ -3,7 +3,11 @@
 import DashboardCompany from "@/components/Dashboard-company";
 
 const Layout = ({ children }) => {
-  return <main className="flex-1 p-4 md:p-8">{children}</main>;
+  return (
+    <DashboardCompany>
+     {children}
+    </DashboardCompany>
+  )
 };
 
 export default Layout;

@@ -22,7 +22,7 @@ export default function Footer() {
                             <h3 className="font-semibold text-lg pb-2">Company</h3>
                             <ul className="text-gray-600 space-y-2">
                                 <li><Link href="/about-us">About Us</Link></li>
-                                <li><Link href="/contact">Contact Us</Link></li>
+                                <li><Link href="/contact-us">Contact Us</Link></li>
                                 <li><Link href="/faq">FAQ</Link></li>
                                 <li><Link href="/privacy">Privacy Policy</Link></li>
                             </ul>
