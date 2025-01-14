@@ -53,10 +53,10 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  fetchCompanyById: async (userId) => {
+  fetchCompanyById: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await fetch(`${API_URL}/users/${userId}`, {
+      const response = await fetch(`${API_URL}/users/${id}`, {
         method: "GET",
         credentials: "include",
       });
