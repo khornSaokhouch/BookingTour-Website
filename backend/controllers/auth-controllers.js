@@ -28,7 +28,7 @@ export const signup = async (req, res) => {
   } = req.body;
 
   // Define the fixed admin ID
-  const allowedIDadmin = "6784b62fe5b2551e15319e02";
+  const allowedIDadmin = "67824394c37fb65437da2bd6";
   // Define allowed roles and statuses
   const allowedRoles = ["user", "admin", "subadmin"];
   const allowedStatuses = ["pending", "approved", "rejected"];
@@ -493,10 +493,10 @@ export const uploadImage = async (req, res) => {
 };
 // controllers/auth-controllers.js
 export const companyUser = async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.params;
 
   try {
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(id).select("-password");
 
     if (!user) {
       return res.status(404).json({

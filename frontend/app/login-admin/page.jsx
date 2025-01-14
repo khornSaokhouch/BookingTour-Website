@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../store/authStore";
+import { useAdminStore } from "../../store/adminStore";
 import Link from "next/link";
 
 const LoginPage = () => {
@@ -17,42 +18,20 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuthStore();
-  // Admin login function
+  const { loginAdmin } = useAdminStore(); // Admin login function
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
     try {
-      const user = await login(email, password);
-
-      // Debugging log
-      console.log("Logged-in User:", user);
-
-      if (!user) {
-        throw new Error("Invalid credentials");
-      }
-
-      // Check for user role
-      const { role, id } = user;
-
-      if (!role) {
-        throw new Error("User role is not defined");
-      }
-
-      // Redirect based on user role
-      if (role === "subadmin") {
-        if (!id) {
-          throw new Error("User ID is required for subadmin redirection");
-        }
-        router.push(`/company/${id}/dashboard`);
+      setIsLoading(true);
+      const user = await loginAdmin(email, password); // Assuming loginAdmin returns user data
+      if (user && user._id) {
+        router.push(`/admin/${user._id}/dashboard-admin`);
       } else {
-        router.push("/profile");
+        setError("Unable to retrieve user information.");
       }
     } catch (err) {
-      setError(err.message || "Login failed. Please try again.");
-      console.error("Login error:", err);
+      setError("Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);
     }

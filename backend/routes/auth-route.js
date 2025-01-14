@@ -28,17 +28,11 @@ router.get("/profile", verifyToken, getProfile);
 router.get("/users", verifyToken, getUsersByRole);
 // Route to edit a user
 router.put("/users/:userId", editUser); // Use PUT to edit
-router.get(
-  "/users/:userId",
-  (req, res, next) => {
-    console.log("Request received for userId:", req.params.userId);
-    next();
-  },
-  companyUser
-);
+
+router.get("/users/:id", companyUser);
 
 // Delete user route
-router.delete("/users/:userId", deleteUser); // Use DELETE to remove
+router.delete("/users/:id", deleteUser); // Use DELETE to remove
 
 // router.put("/profile", verifyToken, updateProfile);
 
