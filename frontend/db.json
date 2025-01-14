@@ -1,0 +1,224 @@
+{
+    "destinations": [
+      {
+        "destination": "Cambodian Museum",
+        "price": "$5,420",
+        "duration": "10 Days Trip",
+        "image": "https://www.conicaltravel.com/wp-content/uploads/2020/04/Cambodian-National-Museum.png"
+      },
+      {
+        "destination": "Angkor Wat",
+        "price": "$6,200",
+        "duration": "7 Days Trip",
+        "image": "https://vj-prod-website-cms.s3.ap-southeast-1.amazonaws.com/depositphotos12280326xl-1717552903561.jpg"
+      },
+      {
+        "destination": "Shihanuk",
+        "price": "$4,800",
+        "duration": "12 Days Trip",
+        "image": "https://www.true.travel/wp-content/uploads/2023/12/AS_Cambodia_Song-Saa-Aerial-of-Island-1536x810.jpeg"
+      }
+    ],
+    "trending": [
+      {
+        "name": "Mountains",
+        "image": "https://i.pinimg.com/736x/7a/56/2e/7a562ecc26f31c61d10b2b5139a0b9df.jpg"
+      },
+      {
+        "name": "Desert",
+        "image": "https://i.pinimg.com/736x/52/a8/16/52a816854b7fb5bc7512e9f0a8b3f7de.jpg"
+      },
+      {
+        "name": "Forest",
+        "image": "https://i.pinimg.com/736x/87/55/59/875559ddb2ca0802b238aa406f7f73c7.jpg"
+      },
+      {
+        "name": "Beach",
+        "image": "https://i.pinimg.com/736x/e4/29/19/e42919874adba2af31ccf389c4d9d1b0.jpg"
+      },
+      {
+        "name": "City",
+        "image": "https://i.pinimg.com/736x/10/00/0e/10000e026456411b41c9ead4b531ee94.jpg"
+      },
+      {
+        "name": "Island",
+        "image": "https://i.pinimg.com/236x/58/94/95/58949541387fca8e2cbfdb5b15242249.jpg"
+      },
+      {
+        "name": "Ocean",
+        "image": "https://i.pinimg.com/736x/9b/b5/30/9bb530bbfa60ce254594cf00815eddf5.jpg"
+      },
+      {
+        "name": "Waterfall",
+        "image": "https://i.pinimg.com/736x/90/4b/e1/904be18bb4840cea3e6abf5387e43b6c.jpg"
+      }
+    ],
+    "tours": [
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      }
+    ],
+    "weekendDeals": [
+      {
+        "image": "https://www.treebo.com/blog/wp-content/uploads/2020/09/Lonavala-1.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://www.treebo.com/blog/wp-content/uploads/2020/09/Lonavala-1.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://www.treebo.com/blog/wp-content/uploads/2020/09/Lonavala-1.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://www.treebo.com/blog/wp-content/uploads/2020/09/Lonavala-1.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      }
+    ],
+    "traditionalTours": [
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      }
+    ],
+    "featureNews": [
+      {
+        "date": "February 20, 2024",
+        "title": "Delicious restaurant at Hanalei Bay",
+        "description": "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
+        "imageUrl": "https://gowanderly.com/site-content/uploads/2022/11/Grilled-seafood-platter-on-a-table.jpg"
+      },
+      {
+        "date": "February 20, 2024",
+        "title": "10 most beautiful check-in spots in PH",
+        "description": "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
+        "imageUrl": "https://gowanderly.com/site-content/uploads/2022/11/Grilled-seafood-platter-on-a-table.jpg"
+      },
+      {
+        "date": "February 20, 2024",
+        "title": "5 newest services at Navagio Beach",
+        "description": "Lorem ipsum is simply dummy text of the printing and typesetting industry.",
+        "imageUrl": "https://gowanderly.com/site-content/uploads/2022/11/Grilled-seafood-platter-on-a-table.jpg"
+      }
+    ],
+    "attractions": [
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      },
+      {
+        "image": "https://goviettravel.com/files/images/indochia-tours/CAMBODIA-TOURS/Phnom%20Penh%2C%20top%20sights%20not%20to%20miss.jpg",
+        "title": "California Sunset/Twilight Boat Cruise",
+        "price": "$48.25",
+        "duration": "2 days / 3 nights - Family",
+        "reviews": "4.5 (1,272 reviews)"
+      }
+    ]
+  }

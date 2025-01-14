@@ -1,26 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faBriefcase } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-import Image from 'next/image';
+import Link from "next/link"; // Import Link from next/link
 
 export default function ProfileUser() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const res = await fetch('/api/user');
-      const data = await res.json();
-      if (data.success) {
-        setUser(data.data[0]); // Assuming you want to display the first user
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -33,12 +19,10 @@ export default function ProfileUser() {
         <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-20">
           {/* Logo */}
           <div className="flex items-center">
-            <Image
+            <img
               src="/logo.png"
               alt="Logo"
-              width={100}
-              height={40}
-              className="object-cover"
+              className="w-auto h-16 md:h-20 object-cover"
             />
           </div>
 
@@ -76,7 +60,7 @@ export default function ProfileUser() {
             </Link>
           </nav>
 
-          {/* Right Section: Favourites + Become Supplier + Profile + Sign in */}
+          {/* Right Section: Favourites + Become Supplier + Sign in */}
           <div className="hidden md:flex items-center space-x-6 ml-auto text-lg">
             <Link
               href="/favourites"
@@ -92,19 +76,7 @@ export default function ProfileUser() {
               <FontAwesomeIcon icon={faBriefcase} className="text-lg" />
               <span>Become a supplier</span>
             </Link>
-            {/* Profile Image */}
-            <Link href="/profile" className="flex items-center">
-              {user && (
-                <Image
-                  src={user.profileImage || "/profile.png"}
-                  alt="Profile"
-                  width={40}
-                  height={40}
-                  className="rounded-full object-cover"
-                />
-              )}
-            </Link>
-            <Link 
+            <Link
               href="/login"
               className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
             >
@@ -127,7 +99,7 @@ export default function ProfileUser() {
             </Link>
             <div className="border-t border-gray-300"></div>
             <Link
-              href="/favourites"
+              href="#"
               className="px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
             >
               <FontAwesomeIcon icon={faHeart} className="text-lg" />
@@ -141,23 +113,8 @@ export default function ProfileUser() {
               <span>Become a supplier</span>
             </Link>
             <Link
-              href="/profile"
-              className="px-4 py-2 hover:bg-gray-100 flex items-center space-x-2"
-            >
-              {user && (
-                <Image
-                  src={user.profileImage || "/profile.png"}
-                  alt="Profile"
-                  width={30}
-                  height={30}
-                  className="rounded-full object-cover"
-                />
-              )}
-              <span>Profile</span>
-            </Link>
-            <Link
               href="/login"
-              className="bg-blue-500 text-white px-6 py-2 rounded-full w-full text-center hover:bg-blue-600"
+              className="bg-blue-500 text-white px-6 py-2 rounded-full w-[100px] hover:bg-blue-600"
             >
               Sign in
             </Link>
@@ -169,7 +126,7 @@ export default function ProfileUser() {
       <div
         className="relative bg-cover bg-center h-[400px] flex items-center justify-center"
         style={{
-          backgroundImage: `url('/banner.png')`,
+          backgroundImage: `url('../banner.png')`, // Replace with your image URL
         }}
       >
         {/* Overlay */}
