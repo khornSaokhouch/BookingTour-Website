@@ -1,13 +1,28 @@
-'use client';
+"use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faBriefcase } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link"; // Import Link from next/link
+import Link from "next/link";
+import { useAuthStore } from "@/store/authStore";
 
-export default function ProfileUser() {
+export default function ProfileUser({ id }) {
+  const { user, fetchCompanyById, fetchUserById } = useAuthStore(); // Correctly invoke the hook
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (id && fetchUserById) {
+        try {
+          await fetchUserById(id); // Fetch user data
+        } catch (err) {
+          console.error("Failed to fetch company data:", err);
+        }
+      }
+    };
+
+    fetchData();
+  }, [id, fetchUserById]);
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -47,7 +62,7 @@ export default function ProfileUser() {
             </svg>
           </button>
 
-          {/* Navigation Links - Visible on Full Screen Only */}
+          {/* Navigation Links */}
           <nav className="hidden md:flex space-x-10 text-gray-700 font-medium text-lg px-20">
             <Link href="/" className="hover:text-blue-500">
               Home
@@ -60,7 +75,7 @@ export default function ProfileUser() {
             </Link>
           </nav>
 
-          {/* Right Section: Favourites + Become Supplier + Sign in */}
+          {/* Right Section */}
           <div className="hidden md:flex items-center space-x-6 ml-auto text-lg">
             <Link
               href="/favourites"
@@ -85,7 +100,7 @@ export default function ProfileUser() {
           </div>
         </div>
 
-        {/* Mobile Navigation Links - Visible on Mobile Only */}
+        {/* Mobile Navigation Links */}
         {isMenuOpen && (
           <div className="flex flex-col md:hidden bg-white shadow-md py-2">
             <Link href="/" className="px-4 py-2 hover:bg-gray-100">
@@ -118,6 +133,23 @@ export default function ProfileUser() {
             >
               Sign in
             </Link>
+            <div className="bg-white shadow-md rounded-lg p-6">
+              {user ? (
+                <>
+                  <h2 className="text-2xl font-semibold mb-4">
+                    User Information
+                  </h2>
+                  <p className="text-gray-700">
+                    <strong>ID:</strong> {id}
+                  </p>
+                  <p className="text-gray-700">
+                    <strong>Name:</strong> {user.name}
+                  </p>
+                </>
+              ) : (
+                <p className="text-gray-700">Loading user information...</p>
+              )}
+            </div>
           </div>
         )}
       </header>
@@ -129,10 +161,8 @@ export default function ProfileUser() {
           backgroundImage: `url('../banner.png')`, // Replace with your image URL
         }}
       >
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
 
-        {/* Hero Content */}
         <div className="relative container mx-auto h-full flex flex-col justify-center items-center text-center px-4 py-20">
           <h1 className="text-white text-4xl md:text-5xl font-semibold mb-4">
             Discover Amazing Places
@@ -141,28 +171,39 @@ export default function ProfileUser() {
             Explore the best destinations tailored just for you.
           </p>
 
-          {/* Search Box */}
           <div className="flex items-center bg-white rounded-full shadow-lg overflow-hidden w-full max-w-4xl mx-auto mt-10">
-            {/* Location Icon and Label */}
             <div className="flex items-center px-6 text-gray-500 border-r border-gray-300">
               <i className="fa fa-map-marker text-blue-500 text-lg"></i>
               <span className="ml-3 font-medium">Location</span>
             </div>
-
-            {/* Input Field */}
             <input
               type="text"
               placeholder="Search by name of location"
               className="flex-1 px-6 py-4 text-gray-700 text-base focus:outline-none placeholder-gray-400"
             />
-
-            {/* Search Button */}
             <button className="bg-blue-500 text-white px-8 py-4 text-base font-medium hover:bg-blue-600 transition-all duration-200 ease-in-out">
               Search
             </button>
           </div>
         </div>
       </div>
+      <section className="container mx-auto py-10 px-4 md:px-20">
+        <div className="bg-white shadow-md rounded-lg p-6">
+          {user ? (
+            <>
+              <h2 className="text-2xl font-semibold mb-4">User Information</h2>
+              <p className="text-gray-700">
+                <strong>ID:</strong> {id}
+              </p>
+              <p className="text-gray-700">
+                <strong>Name:</strong> {user.name}
+              </p>
+            </>
+          ) : (
+            <p className="text-gray-700">Loading user information...</p>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
